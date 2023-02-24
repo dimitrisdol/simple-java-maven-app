@@ -1,6 +1,6 @@
 FROM maven:3.5-jdk-8 AS build  
-COPY src 
-COPY pom.xml  
+COPY src /src
+COPY pom.xml  pom.xml
 RUN mvn clean package
 
 FROM gcr.io/distroless/java  
