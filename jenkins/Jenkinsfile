@@ -34,7 +34,7 @@ pipeline {
 		stage("Docker Build"){
 			steps{
 				script {
-                    docker.build("${USER_CREDENTIALS_USR}/simple-java-maven-app:${TAG}")
+                    dockerImage = docker.build("${USER_CREDENTIALS_USR}/simple-java-maven-app:${TAG}")
                 }
 			}
 		}
@@ -80,10 +80,12 @@ pipeline {
                 }
 			}
 		}
-		/*stage("Deliver Docker Image"){
-			steps{
-				sh 'docker login -u $USER_CREDENTIALS_USR -p $USER_CREDENTIALS_PSW $NEXUS_URL/repository/$NEXUS_DOCKER_REPOSITORY/'
-			}
-		} */
+		stage('Deploy Image') {
+     		steps{
+        		script {
+            		docker.withRegistry( '172.19.0.4:8082', NEXUS_CREDENTIAL_ID ) {
+            		dockerImage.push()
+          }
+        }
 	}
 }
