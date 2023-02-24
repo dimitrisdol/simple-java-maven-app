@@ -37,6 +37,7 @@ pipeline {
                     docker.build("${USER_CREDENTIALS_USR}/simple-java-maven-app:${TAG}")
                 }
 			}
+		}
 		stage("Deliver"){
 			steps{
 				 script {
@@ -79,10 +80,10 @@ pipeline {
                 }
 			}
 		}
-		stage("Deliver Docker Image"){
+		/*stage("Deliver Docker Image"){
 			steps{
 				sh 'docker login -u $USER_CREDENTIALS_USR -p $USER_CREDENTIALS_PSW $NEXUS_URL/repository/$NEXUS_DOCKER_REPOSITORY/'
 			}
-		}
+		} */
 	}
 }
