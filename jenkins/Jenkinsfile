@@ -80,10 +80,10 @@ pipeline {
                 }
 			}
 		}
-		stage('Deploy Image') {
+		stage("Deploy Image") {
      		steps{
         		script {
-            		docker.withRegistry( '172.19.0.4:8082', NEXUS_CREDENTIAL_ID ) {
+            		docker.withRegistry( 'http://localhost:8082', NEXUS_CREDENTIAL_ID ) {
             		dockerImage.push()
     	        	}
       			}     
