@@ -1,4 +1,4 @@
-FROM maven:3.5-jdk-8 AS build  
+FROM maven:3.9-jdk-8 AS build  
 COPY src ./src
 COPY pom.xml  .
 RUN mvn clean package
