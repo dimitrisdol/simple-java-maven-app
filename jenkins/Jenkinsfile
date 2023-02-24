@@ -85,7 +85,9 @@ pipeline {
         		script {
             		docker.withRegistry( '172.19.0.4:8082', NEXUS_CREDENTIAL_ID ) {
             		dockerImage.push()
-          }
-        }
+    	        	}
+      			}     
+        	}
+		}
 	}
 }
