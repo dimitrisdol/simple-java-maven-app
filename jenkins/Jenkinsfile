@@ -8,6 +8,7 @@ pipeline {
         NEXUS_VERSION = "nexus3"
         NEXUS_PROTOCOL = "http"
         NEXUS_URL = "172.19.0.3:8081"
+        NEXUS_URL_DOCKER = "172.19.0.3:8082"
         NEXUS_REPOSITORY = "maven"
         NEXUS_CREDENTIAL_ID = "Nexus-credentials-jenkins"
 
@@ -83,7 +84,7 @@ pipeline {
 		stage("Deploy Image") {
      		steps{
         		script {
-            		docker.withRegistry( 'http://localhost:8082', NEXUS_CREDENTIAL_ID ) {
+            		docker.withRegistry( 'NEXUS_URL_DOCKER', NEXUS_CREDENTIAL_ID ) {
             		dockerImage.push()
     	        	}
       			}     
