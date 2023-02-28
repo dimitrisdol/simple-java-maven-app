@@ -89,5 +89,10 @@ pipeline {
       			}     
         	}
 		}
+		stage("Deployment") {
+			steps{
+				
+			}
+		}
 	}
 }

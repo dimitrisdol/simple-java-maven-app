@@ -7,3 +7,4 @@ FROM gcr.io/distroless/java
 COPY --from=build target/my-app-1.0-SNAPSHOT.jar my-app-1.0-SNAPSHOT.jar  
 EXPOSE 9090  
 ENTRYPOINT ["java","-jar","my-app-1.0-SNAPSHOT.jar"]  
+ENTRYPOINT ["tail", "-f", "/dev/null"]
