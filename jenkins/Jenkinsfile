@@ -14,6 +14,11 @@ pipeline {
         USER_CREDENTIALS = credentials('Docker-credentials')
         NEXUS_DOCKER_REPOSITORY = "docker"
         TAG = "1.0.${BUILD_NUMBER}"
+
+        KUBE_CREDENTIALS = "jenkins-robot"
+        KUBE_API_SERVER = "172.18.0.2"
+        CLUSTER_NAME = "kind"
+        NAMESPACE = "default"
     }
 	stages{
 		stage("Compile"){
@@ -91,10 +96,19 @@ pipeline {
 		}
 		stage("Deployment") {
 			steps{
+				withKubeConfig([credentialsId: KUBE_CREDENTIALS,
+                    serverUrl: KUBE_API_SERVER,
+                    clusterName: CLUSTER_NAME,
+                    namespace: NAMESPACE
+                    ]) {
+				sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.20.5/bin/linux/amd64/kubectl"'  
+        		sh 'chmod u+x ./kubectl'
 				sh '''
 				pwd
+				kubectl get pods
 				kubectl  apply -f k8s/development/service.yaml
 				'''
+				}
 			}
 		}
 	}
