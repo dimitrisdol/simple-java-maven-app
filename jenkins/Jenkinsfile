@@ -105,8 +105,8 @@ pipeline {
         		sh 'chmod u+x ./kubectl'
 				sh '''
 				pwd
-				kubectl get pods
-				kubectl  apply -f k8s/development/service.yaml
+				./kubectl get pods
+				./kubectl  apply -f k8s/development/service.yaml
 				'''
 				}
 			}
