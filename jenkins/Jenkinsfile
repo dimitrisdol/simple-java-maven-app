@@ -16,7 +16,7 @@ pipeline {
         TAG = "1.0.${BUILD_NUMBER}"
 
         KUBE_CREDENTIALS = "jenkins-robot"
-        KUBE_API_SERVER = "172.18.0.2"
+        KUBE_API_SERVER = "172.19.0.5"
         CLUSTER_NAME = "kind"
         NAMESPACE = "default"
     }
