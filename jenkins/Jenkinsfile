@@ -89,10 +89,13 @@ pipeline {
       			}     
         	}
 		}
-		//stage("Deployment") {
-		//	steps{
-
-		//	}
-		//}
+		stage("Deployment") {
+			steps{
+				sh '''
+				pwd
+				kubectl  apply -f k8s/development/service.yaml
+				'''
+			}
+		}
 	}
 }
