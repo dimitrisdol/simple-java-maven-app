@@ -15,9 +15,10 @@ pipeline {
         NEXUS_DOCKER_REPOSITORY = "docker"
         TAG = "1.0.${BUILD_NUMBER}"
 
-        KUBE_CREDENTIALS = "jenkins-robot"
-        KUBE_API_SERVER = "172.19.0.5"
-        CLUSTER_NAME = "kind-kind"
+        KUBE_CONFIG = "config"
+        KUBE_CREDENTIALS = "kube-cert"
+        KUBE_API_SERVER = "192.168.49.2:8443"
+        CLUSTER_NAME = "minikube"
         NAMESPACE = "default"
     }
 	stages{
@@ -96,7 +97,8 @@ pipeline {
 		}
 		stage("Deployment") {
 			steps{
-				withKubeConfig([credentialsId: KUBE_CREDENTIALS,
+				withKubeConfig([credentialsId: KUBE_CONFIG,
+					caCertificate: KUBE_CREDENTIALS,
                     serverUrl: KUBE_API_SERVER,
                     clusterName: CLUSTER_NAME,
                     namespace: NAMESPACE
@@ -104,9 +106,10 @@ pipeline {
 				sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.20.5/bin/linux/amd64/kubectl"'  
         		sh 'chmod u+x ./kubectl'
 				sh '''
-				pwd
-				./kubectl get pods -v=8
-				./kubectl  apply -f k8s/development/service.yaml -v=8
+				sed -ri 's/(simple-java-maven-app)(:.*)/\1:${TAG}/' deployment.yaml
+				./kubectl get pods
+				./kubectl patch -f deployment.yaml
+				./kubectl patch -f deployment-service.yaml 
 				'''
 				}
 			}
