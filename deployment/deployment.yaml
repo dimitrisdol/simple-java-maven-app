@@ -1,0 +1,29 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: maven-app
+  name: maven-app
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: maven-app
+  template:
+    metadata:
+      labels:
+        app: maven-app
+    spec:
+      hostNetwork: false
+      containers:
+        - name: maven-app
+          image: 192.168.49.5:8082/jmmisd/simple-java-maven-app:1.0.44
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 9090	
+          resources:
+            limits: {}
+      imagePullSecrets:
+        - name: nexus-secret

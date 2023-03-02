@@ -13,3 +13,14 @@ The `jenkins` directory contains an example of the `Jenkinsfile` (i.e. Pipeline)
 you'll be creating yourself during the tutorial and the `jenkins/scripts` subdirectory
 contains a shell script with commands that are executed when Jenkins processes
 the "Deliver" stage of your Pipeline.
+
+Based on the above information, we were able to create a fully automated CI-CD process
+that begins with the test and build process of this simple maven app and reaches the goal
+of deploying it at our own Kubernetes cluster.
+
+* Firstly we simply built and tested our app
+* Then we created a Dockerfile to docker build our app and integrated it with jenkins
+* Both the jar file and the docker image built, were pushed to a custom local repository
+we created at Nexus
+* Then the docker image was pulled and deployed in a local minikube cluster
+

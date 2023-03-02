@@ -5,16 +5,19 @@ pipeline {
         jdk 'jdk'
     }
     environment {
+    	// Data about Nexus Repository
         NEXUS_VERSION = "nexus3"
         NEXUS_PROTOCOL = "http"
         NEXUS_URL = "172.19.0.4:8081"
         NEXUS_REPOSITORY = "maven"
         NEXUS_CREDENTIAL_ID = "Nexus-credentials-jenkins"
 
+        // Docker data
         USER_CREDENTIALS = credentials('Docker-credentials')
         NEXUS_DOCKER_REPOSITORY = "docker"
         TAG = "1.0.${BUILD_NUMBER}"
 
+        // Information to connect to Kubernetes cluster
         KUBE_CONFIG = "config"
         KUBE_CREDENTIALS = "kube-cert"
         KUBE_API_SERVER = "192.168.49.2:8443"
@@ -24,22 +27,26 @@ pipeline {
 	stages{
 		stage("Compile"){
 			steps{
+				// Compiling to test later
 				sh 'mvn compile'
 			}
 		}
 		stage("Test"){
 			steps{
+				// With compilation successful we can test
 				sh 'mvn test'
 			}
 		}
 		stage("Build"){
 			steps{
+				// With tests passed build and package the app
 				sh 'mvn clean install'
 			}
 		}
 		stage("Docker Build"){
 			steps{
 				script {
+					// We also build the Docker image. I used my docker account and tagged the image based on the pipeline build number.
                     dockerImage = docker.build("${USER_CREDENTIALS_USR}/simple-java-maven-app:${TAG}")
                 }
 			}
@@ -89,6 +96,7 @@ pipeline {
 		stage("Deploy Image") {
      		steps{
         		script {
+        			// Pushing the image to our local docker repository inside Nexus
             		docker.withRegistry( 'http://172.19.0.4:8082', NEXUS_CREDENTIAL_ID ) {
             		dockerImage.push()
     	        	}
@@ -103,8 +111,11 @@ pipeline {
                     clusterName: CLUSTER_NAME,
                     namespace: NAMESPACE
                     ]) {
+				// Firstly lets curl the kubectl tool as it is was not available inside the jenkins container
 				sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.20.5/bin/linux/amd64/kubectl"'  
         		sh 'chmod u+x ./kubectl'
+        		// Firstly, we use sed to change the image tag in the deployment file to pull the latest image 
+        		// Then check to see if any pods are available and apply the new deployment changes and service
 				sh '''
 				sed -ri 's|(simple-java-maven-app)(:.*)|simple-java-maven-app:'"${TAG}"'|' deployment.yaml
 				./kubectl get pods

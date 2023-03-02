@@ -13,3 +13,5 @@ buildNumber.properties
 !/.mvn/wrapper/maven-wrapper.jar
 
 .idea
+
+jenkins/jenkins.yaml
